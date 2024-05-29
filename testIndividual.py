@@ -16,12 +16,12 @@ def extract_features(image_path, nbits):
     #all_points = list(product(range(7, 21), range(4, 23)))
     #all_points = list(product(range(8, 21), range(3, 27)))
     #all_points = list(product(range(5, 25), range(6, 23)))
-    roi_y_range = range(7, 21)
-    roi_x_range = range(4, 23)
+    roi_y_range = range(5, 24)
+    roi_x_range = range(6, 22)
 
     all_points = list(product(roi_y_range, roi_x_range))
 
-    np.random.seed(70)
+    np.random.seed(82)
     selected_points = np.random.choice(len(all_points), nbits, replace=False)
     xx = [all_points[i][0] for i in selected_points]
     yy = [all_points[i][1] for i in selected_points]
@@ -64,7 +64,7 @@ df = pd.read_excel('matriz_aprendizaje.xlsx')
 MA = df.to_numpy()
 
 nc = MA.shape[0]    
-nbits = 130  # Número de bits/características
+nbits = 150  # Número de bits/características
 
 # Crear la interfaz gráfica con Tkinter
 root = tk.Tk()

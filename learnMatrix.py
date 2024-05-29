@@ -20,8 +20,11 @@ def extract_features(image_path, nbits):
     img = img.resize((28, 28))
     imb = np.array(img) > 128
 
-    all_points = list(product(range(7, 21), range(4, 23)))
-    np.random.seed(70)
+    roi_y_range = range(5, 24)
+    roi_x_range = range(6, 22)
+
+    all_points = list(product(roi_y_range, roi_x_range))
+    np.random.seed(82)
     selected_points = np.random.choice(len(all_points), nbits, replace=False)
     xx = [all_points[i][0] for i in selected_points]
     yy = [all_points[i][1] for i in selected_points]
@@ -38,7 +41,7 @@ test_path = r'Imagenes_test'
 
 # Fase de aprendizaje
 nc = 10  # Número de clases (0-9)
-nbits = 120  # Número de bits/características
+nbits = 150  # Número de bits/características
 
 MA = np.zeros((nc, nbits))
 clases = []
@@ -50,7 +53,7 @@ for archivo in os.listdir(train_path):
         if clase not in clases:
             clases.append(clase)
         ruta_imagen = os.path.join(train_path, archivo)
-        features = extract_features(ruta_imagen, nbits)
+        features = extract_features(ruta_imagen, nbits)        
         MA[clase, :] = fnAprender(MA[clase, :], features)
 
 # Evaluación
@@ -70,11 +73,21 @@ print(MA)
 print("Matriz de Confusión:")
 print(confusion_matrix)
 
-# Calcular la precisión
+# Calcular la precisión general
 correct_predictions = np.trace(confusion_matrix)
 total_predictions = np.sum(confusion_matrix)
 precision = correct_predictions / total_predictions
-print("Precisión:", precision * 100)
+print("Precisión General:", precision * 100)
+
+# Calcular la precisión por clase
+total_test_images = 860  # Total de imágenes de prueba
+precisions_por_clase = []
+
+for i in range(nc):
+    correct_per_class = confusion_matrix[i, i]
+    precision_per_class = correct_per_class / total_test_images
+    precisions_por_clase.append(precision_per_class)
+    print(f"Precisión Clase {i}: {precision_per_class * 100:.2f}%")
 
 # Guardar la matriz de aprendizaje en un archivo Excel
 df = pd.DataFrame(MA)
@@ -86,5 +99,5 @@ plt.figure(figsize=(10, 8))
 sns.heatmap(confusion_matrix, annot=True, fmt='d', cmap='Blues')
 plt.xlabel('Predicción')
 plt.ylabel('Verdadero')
-plt.title(f'Matriz de Confusión {precision*100:.2f} % de Precisión')
+plt.title(f'Matriz de Confusión {precision*100:.2f}% de Precisión General')
 plt.show()

@@ -37,8 +37,8 @@ plt.colorbar()
 plt.title('Superposición de Imágenes de Entrenamiento')
 
 # Dibujar la ROI en la imagen
-roi_y_range = range(7, 21)
-roi_x_range = range(4, 23)
+roi_y_range = range(5, 24)
+roi_x_range = range(6, 22)
 for y in roi_y_range:
     for x in roi_x_range:
         plt.plot(x, y, 'bo', markersize=2)
